@@ -13,7 +13,7 @@
 
 ## Before training & evaluating
 
-Data size of pickles which were saving data, vocabs were too big to upload in my git repository. 
+Data size of pickles which were saving data and vocabs were too big to upload in my git repository. 
 1. Make "./dataset" directory for saving data and vocabs.
 2. Run "build_dataset.py"
 
