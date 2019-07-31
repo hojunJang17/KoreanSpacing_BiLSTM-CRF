@@ -64,7 +64,7 @@ test_data = Corpus(test_path, token_vocab.to_indices, label_vocab.to_indices)
 test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=16,
                          drop_last=True, collate_fn=batchify)
 
-device = torch.device('cuda:1') if torch.cuda.is_available() else torch.device('cpu')
+device = torch.device('cuda:2') if torch.cuda.is_available() else torch.device('cpu')
 model.to(device)
 
 

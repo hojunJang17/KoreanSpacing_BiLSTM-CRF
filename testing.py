@@ -8,9 +8,6 @@ from model.net import BiLSTM_CRF
 def result(x, y):
     """
     takes x, y and converts into string
-    :param x: token indices
-    :param y: label indices
-    :return: resulting string
     """
     A = ''
     for i in range(len(x)):
@@ -51,7 +48,7 @@ while True:
     a = [treg.sub('', str(t)).strip() for t in original_text]
     a = [t.lower() for t in a if t]
     a = [wreg.sub('', str(t)) for t in a]
-
+    print(a)
     b = torch.tensor(token_vocab.to_indices(a))
     b = b.view(1, -1)
 

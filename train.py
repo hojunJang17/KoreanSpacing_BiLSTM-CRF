@@ -17,13 +17,13 @@ def evaluate(model, data_loader, device):
 
     model.eval()
     avg_loss = 0
-    for step, mb in tqdm(enumerate(data_loader), desc='eval_steps', total=len(data_loader)):
+    for steps, mb in tqdm(enumerate(data_loader), desc='eval_steps', total=len(data_loader)):
         x_mb, y_mb, _ = map(lambda elm: elm.to(device), mb)
         with torch.no_grad():
             mb_loss = model.loss(x_mb, y_mb)
         avg_loss += mb_loss.item()
     else:
-        avg_loss /= (step + 1)
+        avg_loss /= (steps + 1)
 
     return avg_loss
 
@@ -41,11 +41,10 @@ with open(label_vocab_path, 'rb') as f:
     label_vocab = pickle.load(f)
 
 
-
 # defining model
 hidden_size = params['model'].get('lstm_hidden_size')
-model = BiLSTM_CRF(label_vocab, token_vocab, hidden_size)
 
+model = BiLSTM_CRF(label_vocab, token_vocab, hidden_size)
 
 # training parameters
 epochs = params['training'].get('epochs')
@@ -64,18 +63,14 @@ val_data = Corpus(val_path, token_vocab.to_indices, label_vocab.to_indices)
 val_loader = DataLoader(val_data, batch_size=batch_size, shuffle=False, num_workers=16,
                         drop_last=True, collate_fn=batchify)
 
-
 # training
 opt = optim.Adam(params=model.parameters(), lr=learning_rate)
 scheduler = ReduceLROnPlateau(opt, patience=5)
 device = torch.device('cuda:1') if torch.cuda.is_available() else torch.device('cpu')
-
-
 model.to(device)
 
 for epoch in tqdm(range(epochs), desc='epochs'):
     tr_loss = 0
-
     model.train()
     for step, mb in tqdm(enumerate(train_loader), desc='train_steps', total=len(train_loader)):
 
@@ -100,8 +95,6 @@ for epoch in tqdm(range(epochs), desc='epochs'):
     scheduler.step(val_loss)
 
     tqdm.write('epoch : {}, tr_loss : {:.3f}, val_loss : {:.3f}'.format(epoch+1, tr_loss, val_loss))
-
-
 
 # saving model
 ckpt = {'model_state_dict': model.state_dict(),
